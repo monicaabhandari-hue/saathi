@@ -5,14 +5,14 @@ import json
 from PIL import Image
 import io
 
-# ── Page config ────────────────────────────────────────────────────────────────
+# Page config 
 st.set_page_config(
     page_title="Saathi — साथी",
     page_icon="🤝",
     layout="centered"
 )
 
-# ── Custom CSS ─────────────────────────────────────────────────────────────────
+# Custom CSS
 st.markdown("""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap');
@@ -81,7 +81,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header ─────────────────────────────────────────────────────────────────────
+# Header
 st.markdown("""
 <div class="saathi-header">
   <p class="saathi-title">🤝 Saathi</p>
@@ -92,11 +92,10 @@ st.markdown("""
 
 st.divider()
 
-# ── Groq client ────────────────────────────────────────────────────────────────
-# The API key is stored in HuggingFace Spaces secrets (safe, never exposed)
+# Groq client 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ── Language toggle ────────────────────────────────────────────────────────────
+# Language toggle 
 lang = st.radio(
     "Response language",
     ["English + नेपाली", "English only", "नेपाली मात्र"],
@@ -120,7 +119,7 @@ for i, (label, text) in enumerate(TEMPLATES.items()):
     if cols[i].button(label, use_container_width=True):
         selected_template = text
 
-# ── Input area ─────────────────────────────────────────────────────────────────
+# Input area 
 st.markdown("#### Paste document text or describe what you received:")
 doc_text = st.text_area(
     "",
@@ -149,7 +148,7 @@ if uploaded_file:
     img.save(buf, format="JPEG")
     image_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
-# ── Analyze button ─────────────────────────────────────────────────────────────
+# Analyze button 
 analyze = st.button("✦ Explain this →", type="primary", use_container_width=True)
 
 if analyze:
@@ -187,7 +186,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
             try:
                 # Build message — image or text
                 if image_b64:
-                    # Groq supports vision with llama-4-scout
+                    
                     user_content = [
                         {
                             "type": "image_url",
@@ -219,7 +218,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
                 clean = raw.replace("```json", "").replace("```", "").strip()
                 parsed = json.loads(clean)
 
-                # ── Display results ────────────────────────────────────────────
+                # Display results 
 
                 # Urgency banner
                 if parsed.get("urgency") == "high":
@@ -244,7 +243,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
             except Exception as e:
                 st.error(f"Something went wrong: {str(e)}")
 
-# ── Footer ─────────────────────────────────────────────────────────────────────
+# Footer 
 st.divider()
 st.markdown(
     "<p style='text-align:center; color:#7a8899; font-size:0.8rem;'>Built for the <strong style='color:#ff9933'>Bhutanese-American community</strong> · Saathi means 'companion' in Nepali</p>",
